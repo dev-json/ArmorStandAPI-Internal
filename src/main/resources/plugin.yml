@@ -1,0 +1,7 @@
+name: "ArmorStandAPlugin"
+main: de.jxson.armorstand.ArmorStandAPIPlugin
+version: "1.0.0"
+author: "Jxson"
+api-version: "1.20"
+commands:
+  as:
