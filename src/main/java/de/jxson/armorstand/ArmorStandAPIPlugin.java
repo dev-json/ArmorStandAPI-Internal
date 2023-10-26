@@ -9,6 +9,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import de.jxson.armorstand.api.ArmorStandImpl;
 import de.jxson.armorstand.commands.ArmorStandCommand;
 import de.jxson.armorstand.api.event.ArmorStandInteractEvent;
+import de.jxson.armorstand.listener.ArmorStandUnmountEvent;
 import de.jxson.armorstand.listener.InteractWithArmorStand;
 import de.jxson.armorstand.utils.Version;
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class ArmorStandAPIPlugin extends JavaPlugin {
         getCommand("as").setExecutor(new ArmorStandCommand());
 
         Bukkit.getPluginManager().registerEvents(new InteractWithArmorStand(), this);
+        Bukkit.getPluginManager().registerEvents(new ArmorStandUnmountEvent(), this);
 
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.USE_ENTITY) {
             @Override

@@ -28,6 +28,7 @@ public class ArmorStandCommand implements CommandExecutor {
         if(armorStand == null)
         {
             armorStand = new ArmorStandImpl();
+            System.out.println("Welp");
             System.out.printf("Created a new armorstand with the id %d%n", armorStand.getId());
         }
 

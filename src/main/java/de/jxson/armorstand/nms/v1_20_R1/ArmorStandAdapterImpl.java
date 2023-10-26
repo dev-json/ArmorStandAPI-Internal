@@ -3,15 +3,19 @@ package de.jxson.armorstand.nms.v1_20_R1;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import de.jxson.armorstand.ArmorStandAPIPlugin;
 import de.jxson.armorstand.api.ArmorStand;
 import de.jxson.armorstand.api.ArmorStandImpl;
+import de.jxson.armorstand.api.enums.EquipmentSlot;
 import de.jxson.armorstand.nms.AbstractVersionAdapter;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +130,20 @@ public class ArmorStandAdapterImpl extends AbstractVersionAdapter {
     @Override
     public void updateMetaData() {
 
-        //Support Equipment logic here
+        PacketContainer equipmentContainer = new PacketContainer(PacketType.Play.Server.ENTITY_EQUIPMENT);
+        equipmentContainer.getModifier().writeDefaults();
+        equipmentContainer.getIntegers().write(0, getArmorStand().getId());
+
+        List<Pair<EnumWrappers.ItemSlot, ItemStack>> equipmentList = new ArrayList<>();
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, getArmorStand().getEquipment(EquipmentSlot.HELMET)));
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, getArmorStand().getEquipment(EquipmentSlot.CHESTPLATE)));
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, getArmorStand().getEquipment(EquipmentSlot.LEGGINGS)));
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, getArmorStand().getEquipment(EquipmentSlot.BOOTS)));
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, getArmorStand().getEquipment(EquipmentSlot.MAIN_HAND)));
+        equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, getArmorStand().getEquipment(EquipmentSlot.OFF_HAND)));
+
+        equipmentContainer.getSlotStackPairLists().write(0, equipmentList);
+
 
         PacketContainer entityMetadataContainer = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         entityMetadataContainer.getModifier().writeDefaults();
@@ -136,7 +153,11 @@ public class ArmorStandAdapterImpl extends AbstractVersionAdapter {
         watcher.setObject(0, WrappedDataWatcher.Registry.get(Byte.class), ((ArmorStandImpl) getArmorStand()).getBitMask());
 
         entityMetadataContainer.getDataValueCollectionModifier().write(0, wrappedDataValueList);
-        getVisibiltyModifierPlayers().forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, entityMetadataContainer));
+        getVisibiltyModifierPlayers().forEach(player ->
+        {
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, entityMetadataContainer);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, equipmentContainer);
+        });
     }
 
     @Override

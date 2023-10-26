@@ -17,8 +17,8 @@ public class InteractWithArmorStand implements Listener {
     {
         ArmorStand armorStand = event.getArmorStand();
         Player player = event.getPlayer();
-        ItemStack interactedItem = event.getPlayer().getActiveItem();
-
+        ItemStack interactedItem = event.getPlayer().getInventory().getItemInMainHand();
+        System.out.println(interactedItem);
         if(interactedItem.getType() == Material.STICK)
         {
             Location location = armorStand.getLocation().clone();
