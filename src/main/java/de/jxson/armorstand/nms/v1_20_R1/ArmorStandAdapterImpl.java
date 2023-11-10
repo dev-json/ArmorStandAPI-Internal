@@ -50,7 +50,9 @@ public class ArmorStandAdapterImpl extends AbstractVersionAdapter {
         getPassengers().forEach(this::removePassenger);
         PacketContainer destroyEntityPacketContainer = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
         destroyEntityPacketContainer.getModifier().writeDefaults();
-        destroyEntityPacketContainer.getIntegerArrays().write(0, new int[] {getArmorStand().getId() });
+        List<Integer> ids = new ArrayList<>();
+        ids.add(getArmorStand().getId());
+        destroyEntityPacketContainer.getIntLists().write(0, ids);
         getVisibiltyModifierPlayers().forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, destroyEntityPacketContainer));
     }
 
@@ -103,6 +105,10 @@ public class ArmorStandAdapterImpl extends AbstractVersionAdapter {
         }
         //Set the headrotation afterward
         setHeadRotation(getArmorStand().getYaw(), targetLocation.getPitch());
+
+        //Send teleportation
+        getVisibiltyModifierPlayers().forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, teleportationPacketContainer));
+
     }
 
     @Override
@@ -143,7 +149,6 @@ public class ArmorStandAdapterImpl extends AbstractVersionAdapter {
         equipmentList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, getArmorStand().getEquipment(EquipmentSlot.OFF_HAND)));
 
         equipmentContainer.getSlotStackPairLists().write(0, equipmentList);
-
 
         PacketContainer entityMetadataContainer = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
         entityMetadataContainer.getModifier().writeDefaults();

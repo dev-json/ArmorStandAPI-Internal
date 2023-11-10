@@ -53,4 +53,5 @@ public abstract class AbstractVersionAdapter implements ArmorStandVersionAdapter
     public List<Entity> getPassengers() {
         return passengers;
     }
+
 }

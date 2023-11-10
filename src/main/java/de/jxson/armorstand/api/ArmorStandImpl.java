@@ -72,6 +72,12 @@ public class ArmorStandImpl extends AbstractArmorStand {
 
     @Override
     public void refresh() {
+        getAdapter().refresh();
+    }
 
+    @Override
+    public void destroy() {
+        getAdapter().destroy();
+        ARMORSTAND_STORE.remove(getId());
     }
 }

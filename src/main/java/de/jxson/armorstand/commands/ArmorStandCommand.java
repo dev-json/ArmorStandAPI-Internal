@@ -2,6 +2,7 @@ package de.jxson.armorstand.commands;
 
 import de.jxson.armorstand.api.ArmorStand;
 import de.jxson.armorstand.api.ArmorStandImpl;
+import de.jxson.armorstand.api.enums.ArmorStandMetaData;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -28,7 +29,6 @@ public class ArmorStandCommand implements CommandExecutor {
         if(armorStand == null)
         {
             armorStand = new ArmorStandImpl();
-            System.out.println("Welp");
             System.out.printf("Created a new armorstand with the id %d%n", armorStand.getId());
         }
 
@@ -36,6 +36,7 @@ public class ArmorStandCommand implements CommandExecutor {
         {
             if(args[0].equalsIgnoreCase("spawn"))
             {
+                armorStand.setAttribute(ArmorStandMetaData.IS_VISIBLE, false);
                 armorStand.spawn(player.getLocation());
                 player.sendMessage("Spawned!");
                 return true;
@@ -44,6 +45,11 @@ public class ArmorStandCommand implements CommandExecutor {
             {
                 armorStand.refresh();
                 player.sendMessage("Refreshed!");
+            }
+            else if (args[0].equalsIgnoreCase("destroy"))
+            {
+                armorStand.destroy();
+                player.sendMessage("Killed!");
             }
         }
         else if(args.length == 2)
